@@ -23,13 +23,21 @@ class FinVizSpider(scrapy.Spider):
         self._data = self._read_data_from_json()
 
     def parse(self, response):
-        stat_name_1 = response.css('table.js-snapshot-table tr:nth-child(5) td:nth-child(5)::text').get()
-        stat_name_2 = response.css('table.js-snapshot-table tr:nth-child(6) td:nth-child(5)::text').get()
+        stat_name_1 = response.css(
+            "table.js-snapshot-table tr:nth-child(5) td:nth-child(5)::text"
+        ).get()
+        stat_name_2 = response.css(
+            "table.js-snapshot-table tr:nth-child(6) td:nth-child(5)::text"
+        ).get()
         # Guard against changing layout, which may lead to wrong number
-        if stat_name_1 != 'EPS next Y' or stat_name_2 != 'EPS next 5Y':
-            raise Exception('FinViz table layout has changed.')
-        stat_value_1 = response.css('table.js-snapshot-table tr:nth-child(5) td:nth-child(6) b::text').get()
-        stat_value_2 = response.css('table.js-snapshot-table tr:nth-child(6) td:nth-child(6) b::text').get()
+        if stat_name_1 != "EPS next Y" or stat_name_2 != "EPS next 5Y":
+            raise Exception("FinViz table layout has changed.")
+        stat_value_1 = response.css(
+            "table.js-snapshot-table tr:nth-child(5) td:nth-child(6) b::text"
+        ).get()
+        stat_value_2 = response.css(
+            "table.js-snapshot-table tr:nth-child(6) td:nth-child(6) b::text"
+        ).get()
         additional_data = {
             "eps_growth_projection_1y": stat_value_1,
             "eps_growth_projection_5y": stat_value_2,
