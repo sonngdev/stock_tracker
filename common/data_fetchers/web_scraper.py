@@ -1,10 +1,5 @@
-from datetime import date
-from pathlib import Path
-import json
-import os
-
 import scrapy
-from symbol_list import symbols
+from common.io_handler.io_handler import IOHandler
 
 
 class FinVizSpider(scrapy.Spider):
@@ -14,13 +9,16 @@ class FinVizSpider(scrapy.Spider):
     }
 
     _current_symbol_index = 0
-    _current_date = None
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, symbols: list[str], io_handler: IOHandler, *args, **kwargs):
         super(FinVizSpider, self).__init__(*args, **kwargs)
+
+        self._symbols = symbols
+        self._io_handler = io_handler
+        self._data = self._io_handler.read()
+
         url = self._get_current_url()
         self.start_urls = [url] if url else []
-        self._data = self._read_data_from_json()
 
     def parse(self, response):
         stat_name_1 = response.css(
@@ -57,7 +55,7 @@ class FinVizSpider(scrapy.Spider):
         if next_url:
             yield response.follow(next_url, self.parse)
         else:
-            self._write_data_to_json()
+            self._io_handler.write(self._data)
 
     def _get_current_url(self):
         current_symbol = self._get_current_symbol()
@@ -67,32 +65,10 @@ class FinVizSpider(scrapy.Spider):
             return None
 
     def _get_current_symbol(self):
-        if self._current_symbol_index < len(symbols):
-            return symbols[self._current_symbol_index]
+        if self._current_symbol_index < len(self._symbols):
+            return self._symbols[self._current_symbol_index]
         else:
             return None
 
     def _next_symbol(self):
         self._current_symbol_index += 1
-
-    def _read_data_from_json(self) -> dict[str, dict]:
-        filename = self._get_json_file_path()
-        try:
-            with open(filename, "r", encoding="utf-8") as file:
-                return json.load(file)
-        except FileNotFoundError:
-            return {}
-
-    def _write_data_to_json(self):
-        filename = self._get_json_file_path()
-        os.makedirs(os.path.dirname(filename), exist_ok=True)
-        with open(filename, "w", encoding="utf-8") as file:
-            json.dump(self._data, file, ensure_ascii=True, indent=4)
-
-    def _get_json_file_path(self):
-        if not self._current_date:
-            self._current_date = date.today()
-        this_file_path = os.path.dirname(__file__)
-        app_root_path = Path(this_file_path).parents[0]
-        json_file_path = os.path.join(app_root_path, f"data/{self._current_date}.json")
-        return json_file_path

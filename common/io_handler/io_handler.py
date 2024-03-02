@@ -2,5 +2,5 @@ class IOHandler:
     def read(self) -> dict[str, dict]:
         pass
 
-    def write(self) -> None:
+    def write(self, data: dict[str, dict]) -> None:
         pass
