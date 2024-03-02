@@ -8,7 +8,7 @@ from common.data_fetchers.yahoo_finance import YahooFinanceFetcher
 
 
 def main(symbols: str):
-    symbol_list = symbols.split(",")
+    symbol_list = [symbol.upper() for symbol in symbols.split(",")]
     data_dir_path = os.path.join(os.path.dirname(__file__), "data")
     file_io = FileIO(data_dir_path)
 

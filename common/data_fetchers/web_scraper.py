@@ -37,8 +37,8 @@ class FinVizSpider(scrapy.Spider):
             "table.js-snapshot-table tr:nth-child(6) td:nth-child(6) b::text"
         ).get()
         additional_data = {
-            "eps_growth_projection_1y": stat_value_1,
-            "eps_growth_projection_5y": stat_value_2,
+            "eps_growth_projection_1y": parse_percentage(stat_value_1),
+            "eps_growth_projection_5y": parse_percentage(stat_value_2),
         }
 
         current_symbol = self._get_current_symbol()
@@ -72,3 +72,7 @@ class FinVizSpider(scrapy.Spider):
 
     def _next_symbol(self):
         self._current_symbol_index += 1
+
+
+def parse_percentage(percentage: str) -> float:
+    return float(percentage[:-1]) / 100
