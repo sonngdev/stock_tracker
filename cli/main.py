@@ -3,8 +3,8 @@ import typer
 from scrapy.crawler import CrawlerProcess
 
 from common.io_handler.file_io import FileIO
-from common.data_fetchers.web_scraper import FinVizSpider
-from common.data_fetchers.yahoo_finance import YahooFinanceFetcher
+from common.data_fetcher.web_scraper import FinVizSpider
+from common.data_fetcher.yahoo_finance import YahooFinanceFetcher
 
 
 def main(symbols: str):
