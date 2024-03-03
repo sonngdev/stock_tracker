@@ -1,8 +1,8 @@
 import os
 import typer
 import datetime
-from scrapy.crawler import CrawlerProcess
 
+from scrapy.crawler import CrawlerProcess
 from common.io_handler.file_io import FileIO
 from common.data_fetcher.web_scraper import FinVizSpider
 from common.data_fetcher.yahoo_finance import YahooFinanceFetcher
@@ -10,6 +10,11 @@ from common.calculator.intrinsic_value import (
     calc_discounted_cashflow,
     get_discount_rate_from_beta,
 )
+from common.formatter import stat_formatter
+from rich.console import Console
+from rich.table import Table
+
+console = Console()
 
 
 def main(symbols: str):
@@ -29,6 +34,16 @@ def main(symbols: str):
         yf_fetcher.execute()
 
     # Calculate intrinsic value
+    table = Table(
+        "Symbol",
+        "Cash Flow (mil)",
+        "Debt (mil)",
+        "Cash (mil)",
+        "Growth (%)",
+        "Discount rate (%)",
+        "Shares",
+        "Intrinsic value",
+    )
     data = file_io.read()
     for symbol, stats in data.items():
         discount_rate = get_discount_rate_from_beta(stats["beta"])
@@ -41,7 +56,18 @@ def main(symbols: str):
             discount_rate=discount_rate,
             shares_outstanding=stats["num_shares_outstanding"],
         )
-        print(f"{symbol}: {intrinsic_value:.2f}")
+        table.add_row(
+            symbol,
+            stat_formatter.display_million(stats["operating_cashflow"]),
+            stat_formatter.display_million(stats["total_debt"]),
+            stat_formatter.display_million(stats["cash_and_short_term_investment"]),
+            stat_formatter.display_percentage(stats["eps_growth_projection_5y"]),
+            stat_formatter.display_percentage(discount_rate),
+            stat_formatter.add_thousand_separation(stats["num_shares_outstanding"]),
+            stat_formatter.limit_2_decimal_points(intrinsic_value),
+        )
+
+    console.print(table)
 
 
 if __name__ == "__main__":
