@@ -44,7 +44,8 @@ def main(symbols: list[str]):
     table.add_column("Intrinsic value", justify="right")
 
     data = file_io.read()
-    for symbol, stats in data.items():
+    for symbol in symbols:
+        stats = data[symbol]
         discount_rate = get_discount_rate_from_beta(stats["beta"])
         intrinsic_value = calc_discounted_cashflow(
             operating_cashflow=stats["operating_cashflow"],
