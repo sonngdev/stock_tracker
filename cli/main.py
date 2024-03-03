@@ -1,5 +1,6 @@
 import os
 import typer
+import datetime
 from scrapy.crawler import CrawlerProcess
 
 from common.io_handler.file_io import FileIO
@@ -14,16 +15,18 @@ from common.calculator.intrinsic_value import (
 def main(symbols: str):
     symbol_list = [symbol.upper() for symbol in symbols.split(",")]
     data_dir_path = os.path.join(os.path.dirname(__file__), "data")
-    file_io = FileIO(data_dir_path)
+    current_date = datetime.date.today()
+    file_io = FileIO(data_dir_path, current_date)
 
-    # Fetch data from FinViz
-    process = CrawlerProcess(settings={"LOG_ENABLED": False})
-    process.crawl(FinVizSpider, symbol_list, file_io)
-    process.start()
+    if not file_io.exist(current_date):
+        # Fetch data from FinViz
+        process = CrawlerProcess(settings={"LOG_ENABLED": False})
+        process.crawl(FinVizSpider, symbol_list, file_io)
+        process.start()
 
-    # Fetch data from Yahoo Finance
-    yf_fetcher = YahooFinanceFetcher(symbol_list, file_io)
-    yf_fetcher.execute()
+        # Fetch data from Yahoo Finance
+        yf_fetcher = YahooFinanceFetcher(symbol_list, file_io)
+        yf_fetcher.execute()
 
     # Calculate intrinsic value
     data = file_io.read()
