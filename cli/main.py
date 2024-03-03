@@ -17,21 +17,20 @@ from rich.table import Table
 console = Console()
 
 
-def main(symbols: str):
-    symbol_list = [symbol.upper() for symbol in symbols.split(",")]
+def main(symbols: list[str]):
+    symbols = [symbol.upper() for symbol in symbols]
     data_dir_path = os.path.join(os.path.dirname(__file__), "data")
     current_date = datetime.date.today()
     file_io = FileIO(data_dir_path, current_date)
 
-    if not file_io.exist(current_date):
-        # Fetch data from FinViz
-        process = CrawlerProcess(settings={"LOG_ENABLED": False})
-        process.crawl(FinVizSpider, symbol_list, file_io)
-        process.start()
+    # Fetch data from FinViz
+    process = CrawlerProcess(settings={"LOG_ENABLED": False})
+    process.crawl(FinVizSpider, symbols, file_io)
+    process.start()
 
-        # Fetch data from Yahoo Finance
-        yf_fetcher = YahooFinanceFetcher(symbol_list, file_io)
-        yf_fetcher.execute()
+    # Fetch data from Yahoo Finance
+    yf_fetcher = YahooFinanceFetcher(symbols, file_io)
+    yf_fetcher.execute()
 
     # Calculate intrinsic value
     table = Table()
