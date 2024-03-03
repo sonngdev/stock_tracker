@@ -41,7 +41,7 @@ def main(symbols: str):
             discount_rate=discount_rate,
             shares_outstanding=stats["num_shares_outstanding"],
         )
-        print(f"{symbol}: {intrinsic_value}")
+        print(f"{symbol}: {intrinsic_value:.2f}")
 
 
 if __name__ == "__main__":
