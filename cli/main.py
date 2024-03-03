@@ -34,16 +34,16 @@ def main(symbols: str):
         yf_fetcher.execute()
 
     # Calculate intrinsic value
-    table = Table(
-        "Symbol",
-        "Cash Flow (mil)",
-        "Debt (mil)",
-        "Cash (mil)",
-        "Growth (%)",
-        "Discount rate (%)",
-        "Shares",
-        "Intrinsic value",
-    )
+    table = Table()
+    table.add_column("Symbol")
+    table.add_column("Cash Flow (mil)", justify="right")
+    table.add_column("Debt (mil)", justify="right")
+    table.add_column("Cash (mil)", justify="right")
+    table.add_column("Growth (%)", justify="right")
+    table.add_column("Discount rate (%)", justify="right")
+    table.add_column("Shares", justify="right")
+    table.add_column("Intrinsic value", justify="right")
+
     data = file_io.read()
     for symbol, stats in data.items():
         discount_rate = get_discount_rate_from_beta(stats["beta"])
