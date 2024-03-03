@@ -18,7 +18,7 @@ class YahooFinanceFetcher:
             ticker = yf.Ticker(current_symbol)
 
             company_name = ticker.info["shortName"]
-            operating_cash_flow = ticker.cash_flow.iloc[:, 0]["Operating Cash Flow"]
+            operating_cashflow = ticker.cashflow.iloc[:, 0]["Operating Cash Flow"]
             net_income = ticker.income_stmt.iloc[:, 0]["Net Income"]
             total_debt = ticker.balance_sheet.iloc[:, 0]["Total Debt"]
             cash_and_short_term_investment = ticker.balance_sheet.iloc[:, 0][
@@ -29,7 +29,7 @@ class YahooFinanceFetcher:
             additional_data = {
                 "symbol": current_symbol,
                 "company_name": company_name,
-                "operating_cash_flow": operating_cash_flow,
+                "operating_cashflow": operating_cashflow,
                 "net_income": net_income,
                 "total_debt": total_debt,
                 "cash_and_short_term_investment": cash_and_short_term_investment,
