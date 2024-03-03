@@ -1,4 +1,5 @@
 import scrapy
+from bs4 import BeautifulSoup
 from common.io_handler.io_handler import IOHandler
 
 
@@ -21,30 +22,30 @@ class FinVizSpider(scrapy.Spider):
         self.start_urls = [url] if url else []
 
     def parse(self, response):
-        stat_name_1 = response.css(
-            "table.js-snapshot-table tr:nth-child(5) td:nth-child(5)::text"
-        ).get()
-        stat_name_2 = response.css(
-            "table.js-snapshot-table tr:nth-child(6) td:nth-child(5)::text"
-        ).get()
-        # Guard against changing layout, which may lead to wrong number
-        if stat_name_1 != "EPS next Y" or stat_name_2 != "EPS next 5Y":
-            raise Exception("FinViz table layout has changed.")
-        stat_value_1 = response.css(
-            "table.js-snapshot-table tr:nth-child(5) td:nth-child(6) b::text"
-        ).get()
-        stat_value_2 = response.css(
-            "table.js-snapshot-table tr:nth-child(6) td:nth-child(6) b::text"
-        ).get()
-        additional_data = {
-            "eps_growth_projection_1y": parse_percentage(stat_value_1),
-            "eps_growth_projection_5y": parse_percentage(stat_value_2),
-        }
-
         current_symbol = self._get_current_symbol()
         # Guard against index overflow
         if not current_symbol:
             return
+
+        stat_name_1 = innertext(
+            response.css("table.js-snapshot-table tr:nth-child(5) td:nth-child(5)")
+        )
+        stat_name_2 = innertext(
+            response.css("table.js-snapshot-table tr:nth-child(6) td:nth-child(5)")
+        )
+        # Guard against changing layout, which may lead to wrong number
+        if stat_name_1 != "EPS next Y" or stat_name_2 != "EPS next 5Y":
+            raise Exception("FinViz table layout has changed.")
+        stat_value_1 = innertext(
+            response.css("table.js-snapshot-table tr:nth-child(5) td:nth-child(6)")
+        )
+        stat_value_2 = innertext(
+            response.css("table.js-snapshot-table tr:nth-child(6) td:nth-child(6)")
+        )
+        additional_data = {
+            "eps_growth_projection_1y": parse_percentage(stat_value_1),
+            "eps_growth_projection_5y": parse_percentage(stat_value_2),
+        }
         self._data[current_symbol] = {
             **self._data.get(current_symbol, {}),
             **additional_data,
@@ -72,6 +73,15 @@ class FinVizSpider(scrapy.Spider):
 
     def _next_symbol(self):
         self._current_symbol_index += 1
+
+
+def innertext(selector):
+    """
+    Reference: https://github.com/ddikman/scrapy-innertext
+    """
+    html = selector.get()
+    soup = BeautifulSoup(html, "html.parser")
+    return soup.get_text().strip()
 
 
 def parse_percentage(percentage: str) -> float:
