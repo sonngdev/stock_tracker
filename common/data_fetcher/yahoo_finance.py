@@ -16,14 +16,26 @@ class YahooFinanceFetcher:
 
         while current_symbol:
             ticker = yf.Ticker(current_symbol)
+            income_statement = ticker.income_stmt.iloc[:, 0]
+            balance_sheet = ticker.balance_sheet.iloc[:, 0]
+            cashflow_statement = ticker.cashflow.iloc[:, 0]
 
             company_name = ticker.info["shortName"]
-            operating_cashflow = ticker.cashflow.iloc[:, 0]["Operating Cash Flow"]
-            net_income = ticker.income_stmt.iloc[:, 0]["Net Income"]
-            total_debt = ticker.balance_sheet.iloc[:, 0]["Total Debt"]
-            cash_and_short_term_investment = ticker.balance_sheet.iloc[:, 0][
-                "Cash Cash Equivalents And Short Term Investments"
-            ]
+            operating_cashflow = cashflow_statement["Operating Cash Flow"]
+            net_income = income_statement["Net Income"]
+            total_debt = balance_sheet["Total Debt"]
+            if "Cash Cash Equivalents And Short Term Investments" in balance_sheet:
+                cash_and_short_term_investment = balance_sheet[
+                    "Cash Cash Equivalents And Short Term Investments"
+                ]
+            elif (
+                "Cash And Cash Equivalents" in balance_sheet
+                and "Other Short Term Investments" in balance_sheet
+            ):
+                cash_and_short_term_investment = (
+                    balance_sheet["Cash And Cash Equivalents"]
+                    + balance_sheet["Other Short Term Investments"]
+                )
             num_shares_outstanding = ticker.info["sharesOutstanding"]
             beta = ticker.info["beta"]
             additional_data = {
