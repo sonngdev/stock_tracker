@@ -1,16 +1,23 @@
 from django.db import models
 
 
-class FetchedData(models.Model):
+class Stock(models.Model):
     symbol = models.CharField(max_length=10)
-    cash_flow = models.BigIntegerField()
+    company_name = models.CharField(max_length=100)
+
+
+class DiscountedCashflowData(models.Model):
+    stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
+
+    operating_cashflow = models.BigIntegerField()
     total_debt = models.BigIntegerField()
-    cash = models.BigIntegerField()
-    growth_1_3 = models.FloatField()
-    growth_4_10 = models.FloatField()
+    cash_and_shortterm_investment = models.BigIntegerField()
+    eps_growth_projection_1y = models.FloatField()
+    eps_growth_projection_5y = models.FloatField()
     beta = models.FloatField()
     shares_outstanding = models.BigIntegerField()
     stated_at = models.DateField("date of the financial statements")
+    intrinsic_value = models.FloatField()
 
     def __str__(self) -> str:
-        return f"{self.symbol} ({self.stated_at})"
+        return f"{self.stock.symbol} ({self.stated_at})"
