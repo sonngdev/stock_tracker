@@ -5,6 +5,9 @@ class Stock(models.Model):
     symbol = models.CharField(max_length=10)
     company_name = models.CharField(max_length=100)
 
+    def __str__(self) -> str:
+        return self.symbol
+
 
 class DiscountedCashflowData(models.Model):
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)

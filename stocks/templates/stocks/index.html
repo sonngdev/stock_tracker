@@ -16,9 +16,9 @@
     </tr>
   </thead>
   <tbody>
-    {% for stock in stocks %}
+    {% for item in intrinsic_value_data %}
       <tr>
-        <td>{{ stock.symbol }}</td>
+        <td>{{ item.stock.symbol }}</td>
         {% comment %} <td>{{ data_item.operating_cash_flow }}</td>
         <td>{{ data_item.total_debt }}</td>
         <td>{{ data_item.cash_and_short_term_investment }}</td>

@@ -1,14 +1,15 @@
 from django.shortcuts import render
 
 from .models import Stock
+from .utils import intrinsic_value
 
 
 default_symbols = ["MSFT", "AAPL"]
 
 
 def index(request):
-    stocks = Stock.objects.filter(symbol=default_symbols)
+    intrinsic_value_data = intrinsic_value.get_intrinsic_values(default_symbols)
     context = {
-        "stocks": stocks,
+        "intrinsic_value_data": intrinsic_value_data,
     }
     return render(request, "stocks/index.html", context)
