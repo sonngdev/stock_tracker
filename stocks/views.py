@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
-from .models import Stock
-from .utils import intrinsic_value
+from .models import DiscountedCashflowData
+from .utils import intrinsic_value, stat_formatter
 
 
 default_symbols = ["MSFT", "AAPL"]
@@ -9,7 +9,32 @@ default_symbols = ["MSFT", "AAPL"]
 
 def index(request):
     intrinsic_value_data = intrinsic_value.get_intrinsic_values(default_symbols)
+    table_items = [TableSummaryItem(data) for data in intrinsic_value_data]
     context = {
-        "intrinsic_value_data": intrinsic_value_data,
+        "table_items": table_items,
     }
     return render(request, "stocks/index.html", context)
+
+
+class TableSummaryItem:
+    def __init__(self, intrinsic_value_data: DiscountedCashflowData) -> None:
+        self.stock_symbol = intrinsic_value_data.stock.symbol
+        self.operating_cashflow = stat_formatter.display_million(
+            intrinsic_value_data.operating_cashflow
+        )
+        self.total_debt = stat_formatter.display_million(
+            intrinsic_value_data.total_debt
+        )
+        self.cash_and_shortterm_investment = stat_formatter.display_million(
+            intrinsic_value_data.cash_and_shortterm_investment
+        )
+        self.eps_growth_projection_5y = stat_formatter.display_percentage(
+            intrinsic_value_data.eps_growth_projection_5y
+        )
+        self.beta = intrinsic_value_data.beta
+        self.shares_outstanding = stat_formatter.add_thousand_separation(
+            intrinsic_value_data.shares_outstanding
+        )
+        self.intrinsic_value = stat_formatter.limit_2_decimal_points(
+            intrinsic_value_data.intrinsic_value
+        )

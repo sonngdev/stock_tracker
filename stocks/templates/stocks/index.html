@@ -4,29 +4,29 @@
   <thead>
     <tr>
       <th>Symbol</th>
-      {% comment %} <th>Cash Flow (mil)</th>
+      <th>Cash Flow (mil)</th>
       <th>Debt (mil)</th>
       <th>Cash (mil)</th>
       <th>Growth (%)</th>
       <th>Beta</th>
       <th>Shares</th>
       <th>Intrinsic value</th>
-      <th>Current value</th>
+      {% comment %} <th>Current value</th>
       <th>Should buy?</th> {% endcomment %}
     </tr>
   </thead>
   <tbody>
-    {% for item in intrinsic_value_data %}
+    {% for item in table_items %}
       <tr>
-        <td>{{ item.stock.symbol }}</td>
-        {% comment %} <td>{{ data_item.operating_cash_flow }}</td>
-        <td>{{ data_item.total_debt }}</td>
-        <td>{{ data_item.cash_and_short_term_investment }}</td>
-        <td>{{ data_item.eps_growth_projection_5y }}</td>
-        <td>{{ data_item.beta }}</td>
-        <td>{{ data_item.shares_outstanding }}</td>
-        <td>{{ data_item.intrinsic_value }}</td>
-        <td>{{ current_price[data_item.symbol] }}</td>
+        <td>{{ item.stock_symbol }}</td>
+        <td>{{ item.operating_cashflow }}</td>
+        <td>{{ item.total_debt }}</td>
+        <td>{{ item.cash_and_shortterm_investment }}</td>
+        <td>{{ item.eps_growth_projection_5y }}</td>
+        <td>{{ item.beta }}</td>
+        <td>{{ item.shares_outstanding }}</td>
+        <td>{{ item.intrinsic_value }}</td>
+        {% comment %} <td>{{ current_price[item.symbol] }}</td>
         {% if stock.intrinsic_value >= current_price[stock.symbol] %}
           <td>YES</td>
         {% else %}
