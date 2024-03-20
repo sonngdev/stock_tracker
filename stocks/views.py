@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 from .models import DiscountedCashflowData
 from .utils import intrinsic_value, stat_formatter
+import yfinance as yf
 
 
 default_symbols = ["MSFT", "AAPL"]
@@ -37,4 +38,11 @@ class TableSummaryItem:
         )
         self.intrinsic_value = stat_formatter.limit_2_decimal_points(
             intrinsic_value_data.intrinsic_value
+        )
+
+        ticker = yf.Ticker(self.stock_symbol)
+        current_price = ticker.info["currentPrice"]
+        self.current_price = stat_formatter.limit_2_decimal_points(current_price)
+        self.should_buy = (
+            "YES" if intrinsic_value_data.intrinsic_value > current_price else "NO"
         )

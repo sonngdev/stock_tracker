@@ -11,8 +11,8 @@
       <th>Beta</th>
       <th>Shares</th>
       <th>Intrinsic value</th>
-      {% comment %} <th>Current value</th>
-      <th>Should buy?</th> {% endcomment %}
+      <th>Current value</th>
+      <th>Should buy?</th>
     </tr>
   </thead>
   <tbody>
@@ -26,12 +26,8 @@
         <td>{{ item.beta }}</td>
         <td>{{ item.shares_outstanding }}</td>
         <td>{{ item.intrinsic_value }}</td>
-        {% comment %} <td>{{ current_price[item.symbol] }}</td>
-        {% if stock.intrinsic_value >= current_price[stock.symbol] %}
-          <td>YES</td>
-        {% else %}
-          <td>NO</td>
-        {% endif %} {% endcomment %}
+        <td>{{ item.current_price }}</td>
+        <td>{{ item.should_buy }}</td>
       </tr>
     {% endfor %}
   </tbody>
