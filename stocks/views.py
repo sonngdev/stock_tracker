@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import DiscountedCashflowData
 from .utils import intrinsic_value, stat_formatter
 from datetime import date
@@ -24,6 +24,11 @@ def detail(request, symbol):
         "detail_item": detail_item,
     }
     return render(request, "stocks/detail.html", context)
+
+
+def search(request):
+    symbol = request.POST.get("symbol")
+    return redirect("stocks:detail", symbol)
 
 
 class IndexItem:

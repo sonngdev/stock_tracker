@@ -18,34 +18,38 @@
         </a>
       </div>
 
-
       <div class="navbar-center">
         <a href="{% url 'stocks:index' %}" class="font-bold text-2xl">Stolker</a>
       </div>
 
       <div class="navbar-end flex justify-end" x-data="{ showSearchInput: false }">
-        <button
-          class="btn btn-ghost"
-          x-on:click="
-            showSearchInput = true;
-            await $nextTick();
-            setTimeout(() => {
-              $refs.searchInput.focus();
-            }, 20);
-          "
-          x-show="!showSearchInput"
-        >
-          <i data-lucide="search"></i>
-          Search
-        </button>
-        <input
-          type="text"
-          placeholder="MSFT, AAPL,..."
-          class="input input-bordered w-24 md:w-auto"
-          x-show="showSearchInput"
-          x-ref="searchInput"
-          x-on:blur="showSearchInput = false"
-        />
+        <form action="{% url 'stocks:search' %}" method="POST">
+          {% csrf_token %}
+          <button
+            type="button"
+            class="btn btn-ghost"
+            x-on:click="
+              showSearchInput = true;
+              await $nextTick();
+              setTimeout(() => {
+                $refs.searchInput.focus();
+              }, 20);
+            "
+            x-show="!showSearchInput"
+          >
+            <i data-lucide="search"></i>
+            Search
+          </button>
+          <input
+            type="text"
+            placeholder="MSFT, AAPL,..."
+            name="symbol"
+            class="input input-bordered w-24 md:w-auto"
+            x-show="showSearchInput"
+            x-ref="searchInput"
+            x-on:blur="showSearchInput = false"
+          />
+        </form>
       </div>
     </div>
   </nav>
