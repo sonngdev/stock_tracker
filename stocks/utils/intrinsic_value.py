@@ -15,6 +15,8 @@ def get_intrinsic_values(stock_symbols: list[str]):
             intrinsic_values.append(None)
             continue
 
+        ticker = yf.Ticker(symbol)
+
         # TODO: Optimize db hits
         try:
             stock = Stock.objects.get(symbol=symbol)
@@ -24,7 +26,6 @@ def get_intrinsic_values(stock_symbols: list[str]):
             stock.company_name = ticker.info["shortName"]
             stock.save()
 
-        ticker = yf.Ticker(symbol)
         balance_sheet = ticker.balance_sheet.iloc[:, 0]
         cashflow_statement = ticker.cashflow.iloc[:, 0]
         latest_report_date: pd.Timestamp = ticker.income_stmt.columns[0]
