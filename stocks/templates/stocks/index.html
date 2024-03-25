@@ -6,30 +6,31 @@
     <thead>
       <tr>
         <th>Symbol</th>
-        <th>Cash Flow (mil)</th>
-        <th>Debt (mil)</th>
-        <th>Cash (mil)</th>
-        <th>Growth (%)</th>
-        <th>Beta</th>
-        <th>Shares</th>
-        <th>Intrinsic value</th>
-        <th>Current value</th>
+        <th class="text-right">Latest quarterly report</th>
+        <th class="text-right">Intrinsic value</th>
+        <th class="text-right">Current value</th>
         <th>Should buy?</th>
       </tr>
     </thead>
     <tbody>
       {% for item in table_items %}
-        <tr>
-          <td>{{ item.stock_symbol }}</td>
-          <td>{{ item.operating_cashflow }}</td>
-          <td>{{ item.total_debt }}</td>
-          <td>{{ item.cash_and_shortterm_investment }}</td>
-          <td>{{ item.eps_growth_projection_5y }}</td>
-          <td>{{ item.beta }}</td>
-          <td>{{ item.shares_outstanding }}</td>
-          <td>{{ item.intrinsic_value }}</td>
-          <td>{{ item.current_price }}</td>
-          <td>{{ item.should_buy }}</td>
+        <tr
+          x-data="{ hover: false }"
+          x-on:mouseenter="hover = true"
+          x-on:mouseleave="hover = false"
+          x-bind:class="hover ? 'hover' : ''"
+        >
+          <td><strong>{{ item.stock_symbol }}</strong></td>
+          <td class="text-right">{{ item.latest_report_date }}</td>
+          <td class="text-right">{{ item.intrinsic_value }}</td>
+          <td class="text-right">{{ item.current_price }}</td>
+          <td>
+            {% if item.should_buy %}
+              <div class="badge badge-success">Yes</div>
+              {% else %}
+              <div class="badge badge-error">No</div>
+            {% endif %}
+          </td>
         </tr>
       {% endfor %}
     </tbody>

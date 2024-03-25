@@ -10,11 +10,25 @@ default_symbols = ["MSFT", "AAPL"]
 
 def index(request):
     intrinsic_value_data = intrinsic_value.get_intrinsic_values(default_symbols)
-    table_items = [TableSummaryItem(data) for data in intrinsic_value_data]
+    table_items = [IndexItem(data) for data in intrinsic_value_data]
     context = {
         "table_items": table_items,
     }
     return render(request, "stocks/index.html", context)
+
+
+class IndexItem:
+    def __init__(self, intrinsic_value_data) -> None:
+        self.stock_symbol = intrinsic_value_data.stock.symbol
+        self.latest_report_date = intrinsic_value_data.stated_at
+        self.intrinsic_value = stat_formatter.limit_2_decimal_points(
+            intrinsic_value_data.intrinsic_value
+        )
+
+        ticker = yf.Ticker(self.stock_symbol)
+        current_price = ticker.info["currentPrice"]
+        self.current_price = stat_formatter.limit_2_decimal_points(current_price)
+        self.should_buy = intrinsic_value_data.intrinsic_value > current_price
 
 
 class TableSummaryItem:
