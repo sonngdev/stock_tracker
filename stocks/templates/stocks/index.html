@@ -20,7 +20,11 @@
           x-on:mouseleave="hover = false"
           x-bind:class="hover ? 'hover' : ''"
         >
-          <td><strong>{{ item.stock_symbol }}</strong></td>
+          <td>
+            <a href="{% url "stocks:detail" item.stock_symbol %}" class="font-bold underline hover:text-base-content/80">
+              {{ item.stock_symbol }}
+            </a>
+          </td>
           <td class="text-right">{{ item.latest_report_date }}</td>
           <td class="text-right">{{ item.intrinsic_value }}</td>
           <td class="text-right">{{ item.current_price }}</td>

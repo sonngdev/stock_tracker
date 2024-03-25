@@ -1,7 +1,7 @@
 from django.shortcuts import render
-
 from .models import DiscountedCashflowData
 from .utils import intrinsic_value, stat_formatter
+from datetime import date
 import yfinance as yf
 
 
@@ -17,6 +17,15 @@ def index(request):
     return render(request, "stocks/index.html", context)
 
 
+def detail(request, symbol):
+    intrinsic_value_data = intrinsic_value.get_intrinsic_values([symbol])
+    detail_item = DetailItem(intrinsic_value_data[0])
+    context = {
+        "detail_item": detail_item,
+    }
+    return render(request, "stocks/detail.html", context)
+
+
 class IndexItem:
     def __init__(self, intrinsic_value_data) -> None:
         self.stock_symbol = intrinsic_value_data.stock.symbol
@@ -28,12 +37,15 @@ class IndexItem:
         ticker = yf.Ticker(self.stock_symbol)
         current_price = ticker.info["currentPrice"]
         self.current_price = stat_formatter.limit_2_decimal_points(current_price)
-        self.should_buy = intrinsic_value_data.intrinsic_value > current_price
+        self.should_buy = intrinsic_value_data.intrinsic_value >= current_price
 
 
-class TableSummaryItem:
+class DetailItem:
     def __init__(self, intrinsic_value_data: DiscountedCashflowData) -> None:
         self.stock_symbol = intrinsic_value_data.stock.symbol
+        self.company_name = intrinsic_value_data.stock.company_name
+        self.latest_report_date = intrinsic_value_data.stated_at
+
         self.operating_cashflow = stat_formatter.display_million(
             intrinsic_value_data.operating_cashflow
         )
@@ -42,6 +54,9 @@ class TableSummaryItem:
         )
         self.cash_and_shortterm_investment = stat_formatter.display_million(
             intrinsic_value_data.cash_and_shortterm_investment
+        )
+        self.eps_growth_projection_1y = stat_formatter.display_percentage(
+            intrinsic_value_data.eps_growth_projection_1y
         )
         self.eps_growth_projection_5y = stat_formatter.display_percentage(
             intrinsic_value_data.eps_growth_projection_5y
@@ -57,6 +72,5 @@ class TableSummaryItem:
         ticker = yf.Ticker(self.stock_symbol)
         current_price = ticker.info["currentPrice"]
         self.current_price = stat_formatter.limit_2_decimal_points(current_price)
-        self.should_buy = (
-            "YES" if intrinsic_value_data.intrinsic_value > current_price else "NO"
-        )
+        self.current_date = date.today()
+        self.should_buy = intrinsic_value_data.intrinsic_value >= current_price

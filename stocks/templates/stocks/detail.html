@@ -1,0 +1,104 @@
+{% extends "stocks/base.html" %}
+
+{% block content %}
+<div class="container mx-auto py-4 overflow-x-auto">
+  <div class="mt-4 mb-8">
+    <h1 class="text-5xl font-bold">{{ detail_item.stock_symbol }}</h1>
+    <div class="text-xl mt-1">{{ detail_item.company_name }}</div>
+  </div>
+
+  <div class="grid grid-cols-2">
+    <div class="flex flex-col gap-6">
+      <div>
+        <div class="text-base-content/60 text-sm">Latest report date</div>
+        <div class="font-bold">{{ detail_item.latest_report_date }}</div>
+      </div>
+
+      <div>
+        <div class="text-base-content/60 text-sm">Cash flow from operation</div>
+        <div class="font-bold">{{ detail_item.operating_cashflow }} million USD</div>
+      </div>
+
+      <div>
+        <div class="text-base-content/60 text-sm">Total debt</div>
+        <div class="font-bold">{{ detail_item.total_debt }} million USD</div>
+      </div>
+
+      <div>
+        <div class="text-base-content/60 text-sm">Cash &amp; short-term investment</div>
+        <div class="font-bold">{{ detail_item.cash_and_shortterm_investment }} million USD</div>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-6">
+      <div>
+        <div class="text-base-content/60 text-sm">EPS growth projection 1Y</div>
+        <div class="font-bold">{{ detail_item.eps_growth_projection_1y }}%</div>
+      </div>
+
+      <div>
+        <div class="text-base-content/60 text-sm">EPS growth projection 5Y</div>
+        <div class="font-bold">{{ detail_item.eps_growth_projection_5y }}%</div>
+      </div>
+
+      <div>
+        <div class="text-base-content/60 text-sm">Beta</div>
+        <div class="font-bold">{{ detail_item.beta }}</div>
+      </div>
+
+      <div>
+        <div class="text-base-content/60 text-sm">Outstanding shares</div>
+        <div class="font-bold">{{ detail_item.shares_outstanding }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 mt-12">
+    <div class="flex flex-col">
+      <div class="text-base-content/60 text-sm">Intrinsic value</div>
+      <div class="font-bold text-xl">{{ detail_item.intrinsic_value }}</div>
+      <small class="text-base-content/60 text-xs">Discounted cash flow</small>
+    </div>
+    <div class="flex flex-col">
+      <div class="text-base-content/60 text-sm">Current price</div>
+      <div class="font-bold text-xl">{{ detail_item.current_price }}</div>
+      <small class="text-base-content/60 text-xs">{{ detail_item.current_date }}</small>
+    </div>
+    <div class="flex flex-col">
+      <div class="text-base-content/60 text-sm">Should buy?</div>
+      {% if detail_item.should_buy %}
+        <div class="font-bold text-xl text-success">Yes</div>
+        <small class="text-base-content/60 text-xs">Good value</small>
+      {% else %}
+        <div class="font-bold text-xl text-error">No</div>
+        <small class="text-base-content/60 text-xs">Bad value</small>
+      {% endif %}
+    </div>
+  </div>
+
+  {% comment %} <div class="stats bg-transparent mt-12">
+    <div class="stat pl-0">
+      <div class="stat-title text-sm">Intrinsic value</div>
+      <div class="stat-value text-xl">{{ detail_item.intrinsic_value }}</div>
+      <div class="stat-desc">Discounted cash flow</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-title text-sm">Current price</div>
+      <div class="stat-value text-xl">{{ detail_item.current_price }}</div>
+      <div class="stat-desc">{{ detail_item.current_date }}</div>
+    </div>
+
+    <div class="stat pr-0">
+      <div class="stat-title text-sm">Should buy?</div>
+      {% if detail_item.should_buy %}
+        <div class="stat-value text-xl text-success">Yes</div>
+        <div class="stat-desc">Good value</div>
+        {% else %}
+        <div class="stat-value text-xl text-error">No</div>
+        <div class="stat-desc">Bad value</div>
+      {% endif %}
+    </div>
+  </div> {% endcomment %}
+</div>
+{% endblock %}
