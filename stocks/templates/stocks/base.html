@@ -6,8 +6,55 @@
   <title>Stolker</title>
   <link href="https://cdn.jsdelivr.net/npm/daisyui@4.8.0/dist/full.min.css" rel="stylesheet" type="text/css" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-base-200 min-h-screen">
+  <nav class="navbar border border-b-2">
+    <div class="container mx-auto flex">
+      <div class="navbar-start">
+        <a href="#" class="btn btn-ghost">
+          <i data-lucide="settings"></i>
+          Watch list
+        </a>
+      </div>
+
+
+      <div class="navbar-center">
+        <a href="{% url 'stocks:index' %}" class="font-bold text-2xl">Stolker</a>
+      </div>
+
+      <div class="navbar-end flex justify-end" x-data="{ showSearchInput: false }">
+        <button
+          class="btn btn-ghost"
+          x-on:click="
+            showSearchInput = true;
+            await $nextTick();
+            setTimeout(() => {
+              $refs.searchInput.focus();
+            }, 20);
+          "
+          x-show="!showSearchInput"
+        >
+          <i data-lucide="search"></i>
+          Search
+        </button>
+        <input
+          type="text"
+          placeholder="MSFT, AAPL,..."
+          class="input input-bordered w-24 md:w-auto"
+          x-show="showSearchInput"
+          x-ref="searchInput"
+          x-on:blur="showSearchInput = false"
+        />
+      </div>
+    </div>
+  </nav>
+
   {% block content %}{% endblock %}
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+  </script>
 </body>
 </html>
