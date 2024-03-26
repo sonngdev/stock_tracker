@@ -1,0 +1,24 @@
+databases:
+  - name: stock_tracker_db
+    plan: free
+    databaseName: stock_tracker
+    user: stock_tracker
+
+services:
+  - type: web
+    plan: free
+    name: stock_tracker
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "python -m gunicorn stock_tracker.asgi:application -k uvicorn.workers.UvicornWorker"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: stock_tracker_db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
+      - key: ENV
+        value: PRODUCTION

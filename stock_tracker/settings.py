@@ -87,7 +87,7 @@ dev_db = {
 
 prod_db = {"default": dj_database_url.config(conn_max_age=600)}
 
-is_dev_env = os.getenv("ENV", "Development") == "Development"
+is_dev_env = os.getenv("ENV", "DEVELOPMENT") == "DEVELOPMENT"
 
 DATABASES = dev_db if is_dev_env else prod_db
 
