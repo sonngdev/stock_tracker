@@ -2,3 +2,4 @@ yfinance==0.2.37
 scrapy==2.11.1
 psycopg2-binary==2.9.9
 dj-database-url==2.1.0
+whitenoise[brotli]==6.6.0
